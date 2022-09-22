@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="merchandiseDetail">
+  <template id="merchandiseDetail">
+    <div id = "merchandise-detail" style="padding: 5%;text-align: center">
+      <div class="row" style="margin:3%;padding: 15%;border: 3px solid #ddd; border-radius: 5px ">
+        <strong>{{merchandise.name}}</strong>
+      </div>
+      <div class="row" style="margin:3%;padding: 5%;">
+        <div class="col-sm-5" style="margin:1%;border: 3px solid #ddd; border-radius: 5px ">价格：{{merchandise.price}}</div>
+        <div class="col-sm-5" style="margin:1%;border: 3px solid #ddd; border-radius: 5px ">
+          数量：<input v-model="count"/>
+        </div>
+
+        <div class="row">
+          <button type="button" class="btn btn-primary" v-on:click="submitOrder()">
+            提交订单
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </template>
+  <script>
+    const MerchandiseDetail = {
+      template: '#merchandiseDetail',
+      data() {
+        return {
+          merchandise:{},
+          count:1,
+          merchandiseId:0
+        }
+      },
+      created(){
+        this.merchandiseId = this.$route.query.id;
+        this.getMerchandiseDetail();
+      },
+      methods: {
+
+        /**
+         * 获取商品详情
+         */
+        getMerchandiseDetail(){
+
+          let loading = layer.load();
+          let thisObj = this;
+          axios
+                  .get(requestUrl.getMerchandiseById+"/"+this.merchandiseId)
+                  .then(function (rep) {
+                    if ( rep.data.status ) {
+                      thisObj.merchandise = rep.data.data;
+                      //  日志收集
+                      logCollect(thisObj.merchandise);
+                    }else {
+                      layer.msg("数据加载错误")
+                    }
+                  })
+                  .catch(function (error) { // 请求失败处理
+                    console.log(error);
+                  }).finally(function () {
+            layer.close(loading);
+          });
+        },
+
+        /**
+         * 提交订单
+         */
+        submitOrder(){
+          let loading = layer.load();
+          let thisObj = this;
+          axios
+                  .post(requestUrl.submitOrder,{merchandiseId:this.merchandiseId,count:this.count})
+                  .then(function (rep) {
+                    if ( rep.data.status ) {
+
+                      let orderId = rep.data.data;
+                      //  跳转订单详情，付款页面
+                      thisObj.$router.push({
+                        name:'orderDetail',
+                        query:{
+                          orderId:orderId
+                        }
+                      })
+                    }else {
+                      layer.msg(rep.data.message)
+                    }
+                  })
+                  .catch(function (error) { // 请求失败处理
+                    console.log(error);
+                  }).finally(function () {
+            layer.close(loading);
+          });
+        }
+      }
+    }
+  </script>
+</div>
+</html>

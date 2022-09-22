@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="login">
+    <template id="login">
+        <div id = "user-login" style="padding: 5%;text-align: center">
+
+            <div class="row">
+                <input placeholder="请输入用户名称" v-model="username">
+            </div>
+            <div class="row">
+                <input placeholder="请输入用户密码" type="password" v-model="password">
+            </div>
+            <div class="row">
+                <button type="button" class="btn btn-primary" v-on:click="login()">
+                    登入
+                </button>
+            </div>
+            <div class="row" style="text-align: right">
+                <router-link :to="{name:'register'}">去注册</router-link>
+            </div>
+        </div>
+    </template>
+    <script>
+        const Login = {
+            template: '#login',
+            data() {
+                return {
+                    username:'',
+                    password:''
+                }
+            },
+            methods: {
+
+                /**
+                 * 登入
+                 */
+                login(){
+
+                    let loading = layer.load();
+                    let thisObj = this;
+                    axios
+                        .post(requestUrl.login,{username:this.username,password: this.password})
+                        .then(function (rep) {
+                            let logUser = {
+                                username: thisObj.username,
+                                info: rep.data
+                            }
+                            //  记录用户登入日志
+                            logCollect(logUser)
+                            if ( rep.data.status ) {
+                                //  跳转商品列表页
+                                window.location.href = requestUrl.home
+                            }else {
+                                layer.msg(rep.data.message)
+                            }
+                        })
+                        .catch(function (error) { // 请求失败处理
+                            console.log(error);
+                        }).finally(function () {
+                        layer.close(loading);
+                    });
+                },
+
+            }
+        }
+    </script>
+</div>
+</html>

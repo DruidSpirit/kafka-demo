@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="payResult">
+  <template id="payResult">
+    <div id = "pay-result" style="padding: 5%;text-align: center">
+      <div class="row">
+        <strong>{{resultInfo}}</strong>
+      </div>
+      <div class="row">
+        商品名称：{{orderInfoRes.merchandiseName}}
+      </div>
+      <div class="row">
+        购买数量：{{orderInfoRes.merchandiseCount}}
+      </div>
+      <div class="row">
+        应付金额：{{orderInfoRes.paymentAmount}}
+      </div>
+      <div class="row">
+        购买人：{{orderInfoRes.purchaseName}}
+      </div>
+      <div class="row">
+        下单时间：{{orderInfoRes.createTime}}
+      </div>
+    </div>
+  </template>
+  <script>
+    const PayResult = {
+      template: '#payResult',
+      data() {
+        return {
+          orderId:0,
+          resultInfo:'',
+          orderInfoRes:{}
+        }
+      },
+      mounted(){
+        this.resultInfo = this.$route.query.resultInfo;
+        this.orderId = this.$route.query.orderId;
+        this.getOrderDetail();
+      },
+      methods: {
+
+        /**
+         * 获取订单详情
+         */
+        getOrderDetail(){
+
+          let loading = layer.load();
+          let thisObj = this;
+          axios
+                  .get(requestUrl.getOrderById+"/"+this.orderId)
+                  .then(function (rep) {
+                    if ( rep.data.status ) {
+                      thisObj.orderInfoRes = rep.data.data;
+                    }else {
+                      layer.msg(rep.data.message)
+                    }
+                  })
+                  .catch(function (error) { // 请求失败处理
+                    console.log(error);
+                  }).finally(function () {
+            layer.close(loading);
+          });
+        },
+
+        /**
+         * 支付金额(这里仅是模拟效果)
+         */
+        payMoney(){
+
+          let loading = layer.load();
+          let thisObj = this;
+          axios
+                  .post(requestUrl.payMoney,{orderId:this.orderId,payAmount:this.orderInfoRes.paymentAmount})
+                  .then(function (rep) {
+                    if ( rep.data.status ) {
+                      layer.msg(rep.data.message)
+                      //  支付成功，跳转商品列表也
+                    }else {
+                      layer.msg(rep.data.message)
+                    }
+                  })
+                  .catch(function (error) { // 请求失败处理
+                    console.log(error);
+                  }).finally(function () {
+            layer.close(loading);
+          });
+
+        }
+
+      }
+    }
+  </script>
+</div>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!--suppress HtmlRequiredLangAttribute, XmlUnusedNamespaceDeclaration, JSUnusedGlobalSymbols, HtmlFormInputWithoutLabel, JSUnresolvedVariable -->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<html>
+<head>
+    <title>商品列表</title>
+</head>
+<template th:replace="|/common|::header"></template>
+<template th:replace="|/view/merchandiseList|::merchandiseList"></template>
+<template th:replace="|/view/merchandiseDetail|::merchandiseDetail"></template>
+<template th:replace="|/view/OrderDetail|::orderDetail"></template>
+<template th:replace="|/view/payResult|::payResult"></template>
+<template th:replace="|/view/login|::login"></template>
+<template th:replace="|/view/register|::register"></template>
+<template th:replace="|/router|::router"></template>
+<body>
+<div id="indexPage">
+    <div class="container">
+        <div class="mainContent" style="margin: 10%;border: 3px solid #dff0d8; border-radius: 5px">
+            <div class="row" th:if="${session.user eq null}" style="text-align: right;margin: 10%;">
+                <router-link :to="{name:'login'}">请登入</router-link>
+            </div>
+            <div class="row" th:if="${session.user ne null}" style="text-align: right;margin: 10%;">
+                <div th:text="${session.user.username}">
+                </div>
+            </div>
+            <div class="row" style="margin: 10%">
+                <router-link :to="{name:'merchandiseList'}">首页</router-link>
+            </div>
+            <router-view/>
+        </div>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript">
+
+     new Vue({
+        el: '#indexPage',
+         router
+    })
+</script>
+</html>

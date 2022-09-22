@@ -1,0 +1,15 @@
+server:
+  port: 9081
+spring:
+  web:
+    resources:
+      static-locations: classpath:/static/
+  thymeleaf:
+    mode: HTML
+    encoding: utf-8
+    prefix: classpath:/templates/
+    suffix: .html
+    servlet:
+      content-type: text/html
+    cache: false    #开发时关闭缓存,不然没法看到实时页面
+

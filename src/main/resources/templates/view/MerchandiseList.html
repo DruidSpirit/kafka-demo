@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="merchandiseList">
+  <template id="merchandiseList">
+    <div id = "merchandise-list">
+      <div class="row">
+        <div class="col-sm-3" v-for = " merchandise in merchandiseList">
+          <router-link :to="{name:'merchandiseDetail',query:{id:merchandise.id}}">
+            <div style="text-align: center;padding: 10%;margin:10%;border:3px solid #eee">
+              <div class="row">
+                <strong>{{merchandise.name}}</strong>
+              </div>
+              <div class="row">
+                {{merchandise.price}}
+              </div>
+            </div>
+          </router-link>
+        </div>
+      </div>
+    </div>
+
+  </template>
+  <script>
+    const MerchandiseList = {
+      template: '#merchandiseList',
+      data() {
+        return {
+          merchandiseList:[]
+        }
+      },
+      created() {
+        this.getMerchandiseList();
+      },
+      methods: {
+
+        /**
+         * 获取商品列表数据
+         */
+        getMerchandiseList(){
+
+          let loading = layer.load();
+          let thisObj = this;
+          axios
+                  .get(requestUrl.getMerchandiseList)
+                  .then(function (rep) {
+                     if ( rep.data.status ) {
+                       thisObj.merchandiseList = rep.data.data;
+                     }else {
+                       layer.msg("数据加载错误")
+                     }
+                  })
+                  .catch(function (error) { // 请求失败处理
+                    console.log(error);
+                  }).finally(function () {
+            layer.close(loading);
+          });
+        }
+      }
+    }
+  </script>
+</div>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<script th:fragment="router">
+
+  const router = new VueRouter({
+      routes: [
+          {
+              path: '/',
+              redirect: '/merchandiseList',
+          },
+          {
+              //    商品列表
+              path: '/merchandiseList',
+              name: 'merchandiseList',
+              component: MerchandiseList
+          },
+          {
+              //    商品详情
+              path: '/merchandiseDetail',
+              name: 'merchandiseDetail',
+              component: MerchandiseDetail
+          },
+          {
+              //    订单详情付款页面
+              path: '/orderDetail',
+              name: 'orderDetail',
+              component: OrderDetail
+          },
+          {
+              //    支付结果页面
+              path: '/payResult',
+              name: 'payResult',
+              component: PayResult
+          },
+          {
+              //    登入页面
+              path: '/login',
+              name: 'login',
+              component: Login
+          },
+          {
+              //    注册耶main
+              path: '/register',
+              name: 'register',
+              component: Register
+          },
+      ]
+  })
+</script>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="register">
+  <template id="register">
+    <div id = "user-register" style="padding: 5%;text-align: center">
+
+      <div class="row">
+        <input placeholder="请输入用户名称" v-model="username">
+      </div>
+      <div class="row">
+        <input placeholder="请输入用户密码" type="password" v-model="password">
+      </div>
+      <div class="row">
+        <button type="button" class="btn btn-primary" v-on:click="register()">
+          注册
+        </button>
+      </div>
+    </div>
+  </template>
+  <script>
+    const Register = {
+      template: '#register',
+      data() {
+        return {
+          username:'',
+          password:''
+        }
+      },
+      methods: {
+
+        /**
+         * 注册
+         */
+        register(){
+
+          let loading = layer.load();
+          let thisObj = this;
+          axios
+                  .post(requestUrl.register,{username:this.username,password: this.password})
+                  .then(function (rep) {
+                    if ( rep.data.status ) {
+                      //  跳转登入页面
+                      layer.msg(rep.data.message)
+                      thisObj.$router.push({name:'login'})
+                    }else {
+                      layer.msg(rep.data.message)
+                    }
+                  })
+                  .catch(function (error) { // 请求失败处理
+                    console.log(error);
+                  }).finally(function () {
+            layer.close(loading);
+          });
+        },
+
+      }
+    }
+  </script>
+</div>
+</html>
